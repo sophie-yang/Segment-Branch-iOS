@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C979B8682326E961003E9671 /* BNCBranchIntegration.h in Headers */ = {isa = PBXBuildFile; fileRef = C979B8622326E961003E9671 /* BNCBranchIntegration.h */; };
+		C979B8682326E961003E9671 /* BNCBranchIntegration.h in Headers */ = {isa = PBXBuildFile; fileRef = C979B8622326E961003E9671 /* BNCBranchIntegration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C979B86A2326E961003E9671 /* BNCBranchIntegrationFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = C979B8642326E961003E9671 /* BNCBranchIntegrationFactory.m */; };
 		C979B86B2326E961003E9671 /* BNCBranchIntegration.m in Sources */ = {isa = PBXBuildFile; fileRef = C979B8652326E961003E9671 /* BNCBranchIntegration.m */; };
-		C979B86C2326E961003E9671 /* BNCBranchIntegrationFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = C979B8662326E961003E9671 /* BNCBranchIntegrationFactory.h */; };
+		C979B86C2326E961003E9671 /* BNCBranchIntegrationFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = C979B8662326E961003E9671 /* BNCBranchIntegrationFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C979B8722326EA44003E9671 /* Analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C979B8702326EA44003E9671 /* Analytics.framework */; };
 		C979B8732326EAF1003E9671 /* Branch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C979B86F2326EA44003E9671 /* Branch.framework */; };
 /* End PBXBuildFile section */
