@@ -9,12 +9,9 @@
 #import "BNCBranchIntegration.h"
 #import <Branch/Branch.h>
 #import <Branch/BNCPreferenceHelper.h>
-#import <Analytics/SEGAnalytics.h>
-#import <Analytics/SEGAnalyticsUtils.h>
+#import <Segment/SEGAnalytics.h>
+#import <Segment/SEGAnalyticsUtils.h>
 
-@interface Branch (SegmentBranch)
-- (void) initSessionIfNeededAndNotInProgress;
-@end
 
 @implementation BNCBranchIntegration
 
@@ -24,13 +21,15 @@
     self.settings = settings ?: @{};
     NSString *branchKey = [self.settings objectForKey:@"branch_key"];
     [Branch setBranchKey:branchKey];
-    NSString*segmentID = [analytics getAnonymousId];
-    if (segmentID.length) {
-        [[BNCPreferenceHelper preferenceHelper] setRequestMetadataKey:@"$segment_anonymous_id" value:segmentID];
-    }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.20 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [[Branch getInstance] initSessionIfNeededAndNotInProgress];
-    });
+    [[Branch getInstance] registerPluginName:@"Segment - iOS" version:@"0.1.22"];
+    
+    [[Branch getInstance] dispatchToIsolationQueue:^{
+        NSString *segmentID = [analytics getAnonymousId];
+        if (segmentID.length) {
+            [[BNCPreferenceHelper preferenceHelper] setRequestMetadataKey:@"$segment_anonymous_id" value:segmentID];
+        }
+    }];
+   
     return self;
 }
 
@@ -231,7 +230,6 @@
     if (!dictionary) return event;
 
     /* BranchEvent fields:
-
     transactionID;
     currency;
     revenue;
@@ -244,7 +242,6 @@
     */
 
     /* Segment event fields:
-
     "order_id": "50314b8e9bcf000000000000",
     "affiliation": "Google Store",
     "value": 30,
@@ -267,20 +264,25 @@
     addStringField(event.searchQuery, query);
 
     NSArray *products = dictionary[@"products"];
+    NSMutableArray *contentItems = [NSMutableArray<BranchUniversalObject *> new];
     if ([products isKindOfClass:NSArray.class]) {
         for (NSMutableDictionary *product in products) {
             BranchUniversalObject *object = [self universalObjectFromDictionary:product];
-            if (object) [event.contentItems addObject:object];
+            if (object) {
+                [contentItems addObject:object];
+            }
         }
         dictionary[@"products"] = nil;
     }
-
     // Maybe the some product fields are at the first level. Don't add if we already have:
-    if (event.contentItems.count == 0) {
+    if (contentItems.count == 0) {
         BranchUniversalObject *object = [self universalObjectFromDictionary:dictionary];
-        if (object) [event.contentItems addObject:object];
+        if (object) {
+            [contentItems addObject:object];
+        }
     }
-
+    event.contentItems = [NSArray arrayWithArray:contentItems];
+    
     // Add any extra fields to customData:
     event.customData = [self stringDictionaryFromDictionary:dictionary];
 
